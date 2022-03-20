@@ -1,16 +1,14 @@
 const express = require("express");
-const cors = require("cors");
+const serverless = require("serverless-http");
 
 const app = express();
+const router = express.Router();
 
-app.use(cors());
-app.use(express.json());
-
-app.get("/", (req, res, next) => {
+router.get("/", (req, res) => {
   res.status(200).send("Hello World");
 });
 
-app.get("/get-food", (req, res, next) => {
+router.get("/get-food", (req, res) => {
   const foods = [
     "กะเพราหมูชิ้น",
     "กะเพราหมูกรอบ",
@@ -96,6 +94,7 @@ app.get("/get-food", (req, res, next) => {
   res.status(200).send(foods[rand]);
 });
 
-app.listen(8888, () => {
-  console.log("server is running on port 8888...");
-});
+app.use(`/.netlify/functions/app`, router);
+
+module.exports = app;
+module.exports.handler = serverless(app);
